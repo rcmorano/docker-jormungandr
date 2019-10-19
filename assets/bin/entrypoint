@@ -31,7 +31,21 @@ then
   sed -i 's|listen:.*|listen: "0.0.0.0:8443"|' ${DATA_DIR}/config.yaml
 fi
 
-jormungandr ${JORMUNGANDR_EXTRA_ARGS} \
-  --genesis-block ${DATA_DIR}/block-0.bin \
-  --config ${DATA_DIR}/config.yaml \
-  --secret ${DATA_DIR}/pool-secret1.yaml
+if [ ! -z ${JORMUNGANDR_ARGS} ]
+then
+  jormungandr ${JORMUNGANDR_ARGS} \
+    --config ${DATA_DIR}/config.yaml
+else
+  if [ ! -z ${JORMUNGANDR_BLOCK0_HASH} ]
+  then
+    jormungandr ${JORMUNGANDR_EXTRA_ARGS} \
+      --genesis-block-hash ${JORMUNGANDR_BLOCK0_HASH} \
+      --config ${DATA_DIR}/config.yaml \
+      --secret ${DATA_DIR}/pool-secret1.yaml
+  else
+    jormungandr ${JORMUNGANDR_EXTRA_ARGS} \
+      --genesis-block ${DATA_DIR}/block-0.bin \
+      --config ${DATA_DIR}/config.yaml \
+      --secret ${DATA_DIR}/pool-secret1.yaml
+  fi
+fi
