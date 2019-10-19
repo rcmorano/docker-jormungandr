@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  jormungandr:
+    restart: unless-stopped
+    image: rcmorano/jormungandr:0.6.5
+    ports:
+      - "8299:8299"
+    #environment:
+    #  - DATA_DIR=/data
+    volumes:
+      - ${PWD}/assets/bin/entrypoint:/usr/local/bin/entrypoint
+      - ${PWD}/data:/data

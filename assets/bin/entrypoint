@@ -1,0 +1,14 @@
+#!/bin/bash
+set -x
+
+# bootstrap the node
+if [[ ! -e block-0.bin ]] || [[ ! -e config.yaml ]] || [[ ! -e poolsecret1.yaml ]]
+then
+  cd $DATA_DIR
+  sh /usr/local/src/jormungandr/scripts/bootstrap
+fi
+
+jormungandr \
+  --genesis-block ${DATA_DIR}/block-0.bin \
+  --config ${DATA_DIR}/config.yaml \
+  --secret ${DATA_DIR}/pool-secret1.yaml
