@@ -1,11 +1,24 @@
 #!/bin/bash
 set -x
+source ~/.baids/baids
 
 # bootstrap the node
 if [[ ! -e block-0.bin ]] || [[ ! -e config.yaml ]] || [[ ! -e poolsecret1.yaml ]]
 then
   cd $DATA_DIR
   sh /usr/local/src/jormungandr/scripts/bootstrap
+fi
+
+if [ -z ${PUBLIC_ADDRESS} ]
+then
+  PUBLIC_ADDRESS=$(curl ifconfig.co)
+  sed -i "s|public_address: \"/\(.*\)/\(.*\)/\(.*\)/\(.*\)\"|public_address: \"/\1/${PUBLIC_ADDRESS}/\3/${PUBLIC_PORT}\"|g" ${DATA_DIR}/config.yaml
+fi
+# make the p2p listen on any IP
+parse_yaml ${DATA_DIR}/config.yaml | grep -q p2p_listen_address.*0.0.0.0.*
+if [ $? -ne 0 ]
+then
+  sed -i 's|p2p:|\np2p:\n  listen_address: "/ip4/0.0.0.0/tcp/8299"|' ${DATA_DIR}/config.yaml
 fi
 
 jormungandr \
