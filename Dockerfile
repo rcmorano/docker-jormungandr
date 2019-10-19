@@ -1,23 +1,3 @@
-#FROM rust:1.38-alpine AS build-from-src
-#
-#ARG JORMUNGANDR_COMMIT=v0.6.5
-#ENV JORMUNGANDR_COMMIT ${JORMUNGANDR_COMMIT}
-#WORKDIR /usr/src
-#
-#RUN rustup install stable && \
-#    rustup default stable && \
-#    apk add --no-cache curl bash git
-#
-#RUN git clone --recurse-submodules https://github.com/input-output-hk/jormungandr && \
-#    cd jormungandr && \
-#    git checkout $JORMUNGANDR_COMMIT && \
-#    git submodule update --recursive && \
-#    cargo build --release
-#
-#WORKDIR /usr/src/jormungandr
-#
-#ENTRYPOINT ["/usr/local/bin/entrypoint"]
-
 FROM ubuntu
 
 VOLUME ["/data"]
@@ -30,9 +10,11 @@ ARG JORMUNGANDR_COMMIT=v0.6.5
 ENV JORMUNGANDR_COMMIT ${JORMUNGANDR_COMMIT}
 
 COPY ./assets/bin/entrypoint /usr/local/bin/entrypoint
-
 RUN apt-get update -qq && \
     apt-get install -y git curl
+
+RUN curl -sSL https://raw.githubusercontent.com/rcmorano/baids/master/baids | bash -s install
+RUN curl -sLo ~/.baids/functions.d/10-bash-yaml https://raw.githubusercontent.com/jasperes/bash-yaml/master/script/yaml.sh
 
 RUN cd /usr/local/src && \
     git clone --recurse-submodules https://github.com/input-output-hk/jormungandr && \
