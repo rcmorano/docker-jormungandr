@@ -1,9 +1,13 @@
 #!/bin/bash
-set -x
+
 source ~/.baids/baids
+if [ ! -z "${DEBUG}" ]
+then
+  set -x
+fi
 
 # bootstrap the node
-if [[ ! -e block-0.bin ]] || [[ ! -e config.yaml ]] || [[ ! -e poolsecret1.yaml ]]
+if [ ! -e "${DATA_DIR}/jormungandr-storage-test/blocks.sqlite" ]
 then
   cd $DATA_DIR
   sh ${HOME}/jormungandr/scripts/bootstrap
@@ -20,8 +24,14 @@ if [ $? -ne 0 ]
 then
   sed -i 's|p2p:|p2p:\n  listen_address: "/ip4/0.0.0.0/tcp/8299"|' ${DATA_DIR}/config.yaml
 fi
+# do the same for the REST api so we can access from outside the container
+parse_yaml ${DATA_DIR}/config.yaml | grep -q rest_listen_address.*0.0.0.0.*
+if [ $? -ne 0 ]
+then
+  sed -i 's|listen:.*|listen: "0.0.0.0:8443"|' ${DATA_DIR}/config.yaml
+fi
 
-jormungandr \
+jormungandr ${JORMUNGANDR_EXTRA_ARGS} \
   --genesis-block ${DATA_DIR}/block-0.bin \
   --config ${DATA_DIR}/config.yaml \
   --secret ${DATA_DIR}/pool-secret1.yaml
