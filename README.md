@@ -40,3 +40,6 @@ docker-compose exec jormungandr jcli
 docker-compose exec jormungandr bash
 ```
 
+# Debug
+
+If you use docker-compose to bring the whole thing up, the entrypoint is bind mounted to easily debug things without having to rebuild the image.
