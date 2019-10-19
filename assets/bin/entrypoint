@@ -6,7 +6,7 @@ source ~/.baids/baids
 if [[ ! -e block-0.bin ]] || [[ ! -e config.yaml ]] || [[ ! -e poolsecret1.yaml ]]
 then
   cd $DATA_DIR
-  sh /usr/local/src/jormungandr/scripts/bootstrap
+  sh ${HOME}/jormungandr/scripts/bootstrap
 fi
 
 if [ -z ${PUBLIC_ADDRESS} ]
@@ -18,7 +18,7 @@ fi
 parse_yaml ${DATA_DIR}/config.yaml | grep -q p2p_listen_address.*0.0.0.0.*
 if [ $? -ne 0 ]
 then
-  sed -i 's|p2p:|\np2p:\n  listen_address: "/ip4/0.0.0.0/tcp/8299"|' ${DATA_DIR}/config.yaml
+  sed -i 's|p2p:|p2p:\n  listen_address: "/ip4/0.0.0.0/tcp/8299"|' ${DATA_DIR}/config.yaml
 fi
 
 jormungandr \
