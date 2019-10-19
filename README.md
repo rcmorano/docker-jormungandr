@@ -17,11 +17,22 @@ Execute from repo root dir:
 ```
 docker-compose up -d
 ```
-
-Container's entrypoint will: 
+It will then:
 * Pull the `rcmorano/jormungandr:0.6.5` from the hub if wasn't built locally
 * Bootstrap the node if the necessary files are not present in `$DATA_DIR`, which defaults to `/data` and is bind mounted from `$GIT_REPO_DIR/data`.
 * Run `jormungandr` with default config 
+
+
+You can also run it using plain docker:
+```
+JORMUNGANDR_VERSION=0.6.5
+PUBLIC_PORT=8300
+docker run -d --name jormungandr-${JORMUNGANDR_VERSION} \
+  -v $HOME/.jormungandr-${JORMUNGANDR_VERSION}:/data \
+  -p 8300:8299 \
+  emurgornd/jormungandr:${JORMUNGANDR_VERSION}
+```
+
 
 ## Checking logs
 
