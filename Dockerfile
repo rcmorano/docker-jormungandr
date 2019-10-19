@@ -6,6 +6,7 @@ VOLUME ["/data"]
 WORKDIR /data
 ENV DATA_DIR /data
 ENV PUBLIC_PORT 8299
+ENV JCLI_HOST http://localhost:8443/api
 ARG JORMUNGANDR_VERSION=0.6.5
 ENV JORMUNGANDR_VERSION ${JORMUNGANDR_VERSION}
 ARG JORMUNGANDR_COMMIT=v0.6.5
@@ -21,8 +22,9 @@ RUN curl -sLo /tmp/jormungandr.tgz https://github.com/input-output-hk/jormungand
 
 USER nobody
 ENV HOME /nonexistent
-RUN curl -sSL https://raw.githubusercontent.com/rcmorano/baids/master/baids | bash -s install
-RUN curl -sLo ~/.baids/functions.d/10-bash-yaml https://raw.githubusercontent.com/jasperes/bash-yaml/master/script/yaml.sh
+RUN curl -sSL https://raw.githubusercontent.com/rcmorano/baids/master/baids | bash -s install && \
+    curl -sLo ~/.baids/functions.d/10-bash-yaml https://raw.githubusercontent.com/jasperes/bash-yaml/master/script/yaml.sh && \
+    jcli auto-completion bash ${HOME}/.baids/functions.d
 
 RUN cd $HOME && \
     git clone --recurse-submodules https://github.com/input-output-hk/jormungandr && \
