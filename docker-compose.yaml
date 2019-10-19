@@ -2,10 +2,12 @@ version: '3.7'
 services:
   jormungandr:
     restart: unless-stopped
-    image: rcmorano/jormungandr:0.6.5
+    image: emurgornd/jormungandr:0.6.5
     ports:
       - "8299:8299"
-    #environment:
+    environment:
+      - DEBUG=true
+      - JORMUNGANDR_EXTRA_ARGS=--enable-explorer
     #  - DATA_DIR=/data
     #  - PUBLIC_ADDRESS=1.1.1.1
     #  - PUBLIC_PORT=8299
