@@ -12,7 +12,7 @@ docker build -t rcmorano/jormungandr:${JORMUNGANDR_VERSION} \
 
 # Run
 
-Execute from repo root dir:
+Customize the environment in docker-compose.yaml and execute this from repo root dir:
 
 ```
 docker-compose up -d
@@ -26,13 +26,30 @@ It will then:
 You can also run it using plain docker:
 ```
 JORMUNGANDR_VERSION=0.6.5
+JORMUNGANDR_EXTRA_ARGS=--enable-explorer
+JORMUNGANDR_BLOCK0_HASH=_CHANGE_ME_ \
 PUBLIC_PORT=8300
 docker run -d --name jormungandr-${JORMUNGANDR_VERSION} \
   -v $HOME/.jormungandr-${JORMUNGANDR_VERSION}:/data \
-  -p 8300:8299 \
+  -p $PUBLIC_PORT:8299 \
+  -e PUBLIC_PORT=$PUBLIC_PORT \
+  -e JORMUNGANDR_BLOCK0_HASH=$JORMUNGANDR_BLOCK0_HASH \
+  -e JORMUNGANDR_EXTRA_ARGS=$JORMUNGANDR_EXTRA_ARGS \
   emurgornd/jormungandr:${JORMUNGANDR_VERSION}
 ```
 
+Note that if no `$JORMUNGANDR_BLOCK0_HASH` was provided, the node will be started with the bootstrapped/generated genesis block.
+
+## Environment variables
+
+| VARIABLE                   | Description                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| JORMUNGANDR_EXTRA_ARGS     | Extra arguments to pass to the daemon                                        |
+| JORMUNGANDR_BLOCK0_HASH    | Genesis block to use instead of local bootstrapped genesis                   |
+| PUBLIC_ADDRESS             | Force daemon to publish this address. If not provided, will be guessed       |
+| PUBLIC_PORT                | Port to be published to the internet. If not provided, defaults to 8299      |
+| DATA_DIR                   | Data dir to be used inside the container. Defaults to `/data`                |
+| DEBUG                      | Sets entrypoint bash script in debug mode                                    |
 
 ## Checking logs
 
