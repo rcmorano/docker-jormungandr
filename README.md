@@ -63,7 +63,7 @@ docker-compose logs -f
 
 Execute from repo root dir:
 ```
-docker-compose exec jormungandr jcli
+docker-compose exec jormungandr bash -c 'jcli rest v0 node stats get --host $JCLI_HOST'
 # or execute an interactive shell
 docker-compose exec jormungandr bash
 ```
