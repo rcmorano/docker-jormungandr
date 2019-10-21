@@ -1,0 +1,118 @@
+#!/bin/bash
+
+function jormungandr-get-current-peers() {
+
+  docker-compose exec jormungandr netstat -putan | grep ESTABL | awk '{print $5}'|sort | uniq
+
+}
+
+function jormungandr-get-peers-from-logs() {
+
+  docker-compose logs | grep connecting.to.peer | sed 's|.*peer_addr: \(.*\), task.*|\1|g' | sort | uniq
+
+}
+
+function jormungandr-get-peer-ip() {
+
+  PEER="$1"
+
+  IS_IPV6=$(echo $PEER | grep -q '^\[' && echo true)
+  if [ "$IS_IPV6" == "true" ]
+  then
+    IP=$(echo $PEER | sed 's|^\[\(.*\)\]:.*|\1|g')
+  else
+    IP=$(echo $PEER | awk -F: '{print $1}')
+  fi
+  echo $IP
+
+}
+
+function jormungandr-get-current-peers-ips() {
+
+  jormungandr-get-current-peers | while read peer
+  do
+    jormungandr-get-peer-ip $peer
+  done | sort | uniq
+
+}
+
+function jormungandr-get-peers-from-logs-ips() {
+
+  jormungandr-get-peers-from-logs | while read peer
+  do
+    jormungandr-get-peer-ip $peer
+  done | sort | uniq
+
+}
+
+function jormungandr-get-current-peers-ipv4() {
+
+ jormungandr-get-current-peers | grep -v '^\[' | while read peer; do jormungandr-get-peer-ip $peer; done | sort | uniq
+
+}
+
+function jormungandr-get-current-peers-ipv6() {
+
+ jormungandr-get-current-peers | grep '^\[' | while read peer; do jormungandr-get-peer-ip $peer; done | sort | uniq
+
+}
+
+function jormungandr-get-current-peers-info() {
+
+  GET_PEERS_COMMAND=jormungandr-get-peers-current-ips
+  jormungandr-get-peers-whois
+
+}
+
+function jormungandr-get-peers-from-log-info() {
+
+  GET_PEERS_COMMAND=jormungandr-get-peers-from-logs-ips
+  jormungandr-get-peers-whois
+
+}
+
+
+
+function jormungandr-get-peers-whois() {
+
+  TEMP_DIR="/tmp/${FUNCNAME}-$(date +%s)" && mkdir ${TEMP_DIR}
+  echo "[+] Saving complete whois infos in '${TEMP_DIR}'..."
+  $GET_PEERS_COMMAND | while read ip
+  do
+    LOG_FILE="${TEMP_DIR}/${ip}.log"
+    whois $ip > "${LOG_FILE}"
+
+    if [ ! -z $(which shodan) ]
+    then
+      shodan host --filename ${ip} ${ip} &> /dev/null
+      PARSED_INFO=$(zcat ${ip}.json.gz 2>/dev/null| jq -r '. | [.location.country_code, .location.country_name, .location.city, .org, .isp] | @csv')
+      if [ ! -z "${PARSED_INFO}" ]
+      then
+        COUNTRY=$(echo $PARSED_INFO | awk -F, '{print $1}' | sed 's|"||g')
+        CITY=$(echo $PARSED_INFO | awk -F, '{print $3}' | sed 's|"||g')
+        ORG_ISP=$(echo $PARSED_INFO | awk -F, '{print $4" / "$5}' | sed 's|"||g')
+      fi
+    fi
+    test -z "$COUNTRY" && COUNTRY=$(grep -i ^country $LOG_FILE | head -n1 | awk -F: '{print $NF}' | sed 's|^ \+||g') && test -z "$COUNTRY" && COUNTRY=unknown
+    test -z "$CITY" && CITY=$(grep -i ^city $LOG_FILE | head -n1 | awk -F: '{print $NF}' | sed 's|^ \+||g') && test -z "$CITY" && CITY=unknown
+
+    DESCRIPTION=$(grep -i "^descr\|^organi\|^owner" $LOG_FILE | head -n1 | awk -F: '{print $NF}' | sed 's|^ \+||g')
+    if [ -z "$DESCRIPTION" ]
+    then
+      DESCRIPTION=$(grep -i "description" $LOG_FILE | head -n1 | awk '{print $NF}')
+    fi
+    test -z "$DESCRIPTION" && DESCRIPTION=unknown
+
+    NETNAME=$(grep -i ^netname $LOG_FILE | head -n1 | awk -F: '{print $NF}' | sed 's|^ \+||g') 
+    if [ -z "$NETNAME" ]
+    then
+      NETNAME=$(grep -i 'network name' $LOG_FILE | head -n1 | awk '{print $NF}')
+    fi
+    test -z "$NETNAME" && NETNAME=unknown
+    test -z "$ORG_ISP" && ORG_ISP=unknown
+
+    echo "\"${ip}\",\"$COUNTRY\",\"$CITY\",\"$NETNAME\",\"$DESCRIPTION / $ORG_ISP\"" >> ${TEMP_DIR}/peers-info.csv
+
+  done
+
+}
