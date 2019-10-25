@@ -20,7 +20,7 @@ docker-compose up -d
 It will then:
 * Pull the `rcmorano/jormungandr:0.6.5` from the hub if wasn't built locally
 * Bootstrap the node if the necessary files are not present in `$DATA_DIR`, which defaults to `/data` and is bind mounted from `$GIT_REPO_DIR/data`.
-* Run `jormungandr` with default config 
+* Run `jormungandr` with default config file (placed in `$DATA_DIR/config.yaml`, so you can easily modify it)
 
 
 You can also run it using plain docker:
