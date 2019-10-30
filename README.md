@@ -3,9 +3,10 @@
 Execute from repo root dir:
 
 ```
-JORMUNGANDR_VERSION=0.6.5
-JORMUNGANDR_COMMIT=v0.6.5 # commit/tag/branch to checkout scripts from
-docker build -t rcmorano/jormungandr:${JORMUNGANDR_VERSION} \
+DOCKER_IMAGE_NAME=rcmorano/jormungandr
+JORMUNGANDR_VERSION=0.7.0-rc2
+JORMUNGANDR_COMMIT=v0.7.0-rc2 # commit/tag/branch to checkout scripts from
+docker build -t ${DOCKER_IMAGE_NAME}:${JORMUNGANDR_VERSION} \
   --build-arg JORMUNGANDR_VERSION=${JORMUNGANDR_VERSION} \
   --build-arg JORMUNGANDR_COMMIT=${JORMUNGANDR_COMMIT} .
 ```
