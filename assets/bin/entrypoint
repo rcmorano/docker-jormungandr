@@ -7,10 +7,12 @@ then
 fi
 
 # bootstrap the node
-if [ ! -e "${DATA_DIR}/jormungandr-storage-test/blocks.sqlite" ]
+if [ ! -e "${DATA_DIR}/block-0.bin" ]
 then
   cd $DATA_DIR
+  test -e config.yaml && mv config.yaml config.yaml_BOOTSTRAP_BACKUP
   sh ${HOME}/jormungandr/scripts/bootstrap
+  mv config.yaml_BOOTSTRAP_BACKUP config.yaml
 fi
 
 if [ -z ${PUBLIC_ADDRESS} ]
