@@ -13,7 +13,7 @@ ARG JORMUNGANDR_COMMIT=v0.6.5
 ENV JORMUNGANDR_COMMIT ${JORMUNGANDR_COMMIT}
 
 RUN apt-get update -qq && \
-    apt-get install -y git curl sudo
+    apt-get install -y git curl sudo net-tools iproute2
 
 RUN curl -sLo /tmp/jormungandr.tgz https://github.com/input-output-hk/jormungandr/releases/download/v${JORMUNGANDR_VERSION}/jormungandr-v${JORMUNGANDR_VERSION}-x86_64-unknown-linux-gnu.tar.gz && \
     cd /usr/local/bin && \
