@@ -35,8 +35,10 @@ fi
 
 if [ ! -z "${JORMUNGANDR_ARGS}" ]
 then
+  # specify default config file if none was provided
+  CONFIG_ARG=$(echo ${JORMUNGANDR_ARGS} | grep -q -- --config || echo -- --config ${DATA_DIR}/config.yaml)
   jormungandr ${JORMUNGANDR_ARGS} \
-    --config ${DATA_DIR}/config.yaml
+    ${CONFIG_ARG}
 else
   if [ ! -z "${JORMUNGANDR_BLOCK0_HASH}" ]
   then
