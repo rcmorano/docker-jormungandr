@@ -15,7 +15,7 @@ then
   mv config.yaml_BOOTSTRAP_BACKUP config.yaml
 fi
 
-if [ -z ${PUBLIC_ADDRESS} ]
+if [ -z "${PUBLIC_ADDRESS}" ]
 then
   PUBLIC_ADDRESS=$(curl ifconfig.co)
   sed -i "s|public_address: \"/\(.*\)/\(.*\)/\(.*\)/\(.*\)\"|public_address: \"/\1/${PUBLIC_ADDRESS}/\3/${PUBLIC_PORT}\"|g" ${DATA_DIR}/config.yaml
@@ -33,12 +33,12 @@ then
   sed -i 's|listen:.*|listen: "0.0.0.0:8443"|' ${DATA_DIR}/config.yaml
 fi
 
-if [ ! -z ${JORMUNGANDR_ARGS} ]
+if [ ! -z "${JORMUNGANDR_ARGS}" ]
 then
   jormungandr ${JORMUNGANDR_ARGS} \
     --config ${DATA_DIR}/config.yaml
 else
-  if [ ! -z ${JORMUNGANDR_BLOCK0_HASH} ]
+  if [ ! -z "${JORMUNGANDR_BLOCK0_HASH}" ]
   then
     jormungandr ${JORMUNGANDR_EXTRA_ARGS} \
       --genesis-block-hash ${JORMUNGANDR_BLOCK0_HASH} \
