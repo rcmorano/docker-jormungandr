@@ -13,7 +13,7 @@ ARG JORMUNGANDR_COMMIT=v0.6.5
 ENV JORMUNGANDR_COMMIT ${JORMUNGANDR_COMMIT}
 
 RUN apt-get update -qq && \
-    apt-get install -y git curl sudo net-tools iproute2
+    apt-get install -y git curl sudo net-tools iproute2 jq
 
 RUN curl -sLo /tmp/jormungandr.tgz https://github.com/input-output-hk/jormungandr/releases/download/v${JORMUNGANDR_VERSION}/jormungandr-v${JORMUNGANDR_VERSION}-x86_64-unknown-linux-gnu.tar.gz && \
     cd /usr/local/bin && \
@@ -23,7 +23,9 @@ RUN curl -sLo /tmp/jormungandr.tgz https://github.com/input-output-hk/jormungand
 USER nobody
 ENV HOME /nonexistent
 RUN curl -sSL https://raw.githubusercontent.com/rcmorano/baids/master/baids | bash -s install && \
+    echo source ~/.baids/baids > ~/.bashrc && \
     curl -sLo ~/.baids/functions.d/10-bash-yaml https://raw.githubusercontent.com/jasperes/bash-yaml/master/script/yaml.sh && \
+    git clone https://github.com/rcmorano/baids-jormungandr.git ~/.baids/functions.d/jormungandr && \
     jcli auto-completion bash ${HOME}/.baids/functions.d
 
 RUN cd $HOME && \
