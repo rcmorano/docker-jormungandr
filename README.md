@@ -4,8 +4,8 @@ Execute from repo root dir:
 
 ```
 DOCKER_IMAGE_NAME=rcmorano/jormungandr
-JORMUNGANDR_VERSION=0.7.0-rc3
-JORMUNGANDR_COMMIT=v0.7.0-rc3 # commit/tag/branch to checkout scripts from
+JORMUNGANDR_VERSION=0.7.0-rc7
+JORMUNGANDR_COMMIT=v0.7.0-rc7 # commit/tag/branch to checkout scripts from
 docker build -t ${DOCKER_IMAGE_NAME}:${JORMUNGANDR_VERSION} \
   --build-arg JORMUNGANDR_VERSION=${JORMUNGANDR_VERSION} \
   --build-arg JORMUNGANDR_COMMIT=${JORMUNGANDR_COMMIT} .
@@ -26,7 +26,7 @@ It will then:
 
 You can also run it using plain docker:
 ```
-JORMUNGANDR_VERSION=0.7.0-rc3
+JORMUNGANDR_VERSION=0.7.0-rc7
 JORMUNGANDR_EXTRA_ARGS=--enable-explorer
 JORMUNGANDR_BLOCK0_HASH=_CHANGE_ME_ \
 PUBLIC_PORT=8300
