@@ -2,7 +2,7 @@ version: '3.7'
 services:
   jormungandr:
     restart: unless-stopped
-    image: emurgornd/jormungandr:0.6.5
+    image: emurgornd/jormungandr:0.7.0-rc7
     ports:
       - "8299:8299"
     environment:
