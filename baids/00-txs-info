@@ -1,7 +1,0 @@
-#!/bin/bash
-
-function jormungandr-get-txs-sent-from-local() {
-
-  docker-compose exec jormungandr jcli rest v0 message logs --output-format json | jq '.[] | select(.received_from=="Rest")'
-
-}
