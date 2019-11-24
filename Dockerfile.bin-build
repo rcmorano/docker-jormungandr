@@ -1,0 +1,11 @@
+ARG JORMUNGANDR_VERSION=0.7.1
+ARG JORMUNGANDR_COMMIT=v0.7.1
+
+FROM emurgornd/jormungandr:latest
+LABEL jormungandr.version="${JORMUNGANDR_VERSION}"
+
+RUN curl -sLo /tmp/jormungandr.tgz https://github.com/input-output-hk/jormungandr/releases/download/v${JORMUNGANDR_VERSION}/jormungandr-v${JORMUNGANDR_VERSION}-x86_64-unknown-linux-gnu.tar.gz && \
+    cd /usr/local/bin && \
+    tar -zxvf /tmp/jormungandr.tgz && \
+    chmod +x jcli jormungandr && \
+    jcli auto-completion bash ${HOME}/.baids/functions.d
