@@ -8,7 +8,9 @@ function jormungandr-get-current-peers() {
 
 function jormungandr-get-peers-from-logs() {
 
-  docker-compose logs | grep connecting.to.peer | sed 's|.*peer_addr: \(.*\), task.*|\1|g' | sort | uniq
+  # this is for plain-text jormun output:
+  #docker-compose logs | grep connecting.to.peer | sed 's|.*peer_addr: \(.*\), task.*|\1|g' | sort | uniq
+  docker-compose logs --no-color | grep connecting.to.peer | awk -F'|' '{print $2}' | sed 's|^ ||g' | jq -r .peer_addr
 
 }
 
