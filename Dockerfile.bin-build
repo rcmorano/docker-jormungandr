@@ -2,6 +2,7 @@ ARG JORMUNGANDR_VERSION=0.7.1
 ARG JORMUNGANDR_COMMIT=v0.7.1
 
 FROM emurgornd/jormungandr:latest
+ENV JORMUNGANDR_VERSION ${JORMUNGANDR_VERSION}
 LABEL jormungandr.version="${JORMUNGANDR_VERSION}"
 
 RUN curl -sLo /tmp/jormungandr.tgz https://github.com/input-output-hk/jormungandr/releases/download/v${JORMUNGANDR_VERSION}/jormungandr-v${JORMUNGANDR_VERSION}-x86_64-unknown-linux-gnu.tar.gz && \
