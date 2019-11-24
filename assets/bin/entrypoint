@@ -11,7 +11,7 @@ if [ ! -e "${DATA_DIR}/block-0.bin" ]
 then
   cd $DATA_DIR
   test -e config.yaml && mv config.yaml config.yaml_BOOTSTRAP_BACKUP
-  sh ${HOME}/jormungandr/scripts/bootstrap
+  sh /src/scripts/bootstrap
   mv config.yaml_BOOTSTRAP_BACKUP config.yaml
 fi
 
