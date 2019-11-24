@@ -3,9 +3,9 @@
 Execute from repo root dir:
 
 ```
-DOCKER_IMAGE_NAME=rcmorano/jormungandr
-JORMUNGANDR_VERSION=0.7.0-rc7
-JORMUNGANDR_COMMIT=v0.7.0-rc7 # commit/tag/branch to checkout scripts from
+DOCKER_IMAGE_NAME=emurgornd/jormungandr
+JORMUNGANDR_VERSION=0.7.1
+JORMUNGANDR_COMMIT=v0.7.1 # commit/tag/branch to checkout scripts from
 docker build -t ${DOCKER_IMAGE_NAME}:${JORMUNGANDR_VERSION} \
   --build-arg JORMUNGANDR_VERSION=${JORMUNGANDR_VERSION} \
   --build-arg JORMUNGANDR_COMMIT=${JORMUNGANDR_COMMIT} .
@@ -19,14 +19,14 @@ Customize the environment in docker-compose.yaml and execute this from repo root
 docker-compose up -d
 ```
 It will then:
-* Pull the `rcmorano/jormungandr:0.6.5` from the hub if wasn't built locally
+* Pull the `emurgornd/jormungandr:latest` from the hub if wasn't built locally
 * Bootstrap the node if the necessary files are not present in `$DATA_DIR`, which defaults to `/data` and is bind mounted from `$GIT_REPO_DIR/data`.
 * Run `jormungandr` with default config file (placed in `$DATA_DIR/config.yaml`, so you can easily modify it)
 
 
 You can also run it using plain docker:
 ```
-JORMUNGANDR_VERSION=0.7.0-rc7
+JORMUNGANDR_VERSION=0.7.1
 JORMUNGANDR_EXTRA_ARGS=--enable-explorer
 JORMUNGANDR_BLOCK0_HASH=_CHANGE_ME_ \
 PUBLIC_PORT=8300
